@@ -1,0 +1,154 @@
+body {
+    font-family: 'Roboto', sans-serif;
+    text-align: center;
+    background: linear-gradient(135deg, #121212, #1e1e1e);
+    color: #e0e0e0;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+h1 {
+    color: #00c4ff;
+    margin-bottom: 20px;
+    font-size: 2.5rem;
+    text-shadow: 0 3px 6px rgba(0, 196, 255, 0.5);
+}
+
+.container {
+    position: relative; /* Ensures child elements like Reset button can be positioned relative to this container */
+    max-width: 600px;
+    background: rgba(30, 30, 30, 0.9);
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.8);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.container:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 25px rgba(0, 196, 255, 0.3);
+}
+
+input[type="file"] {
+    margin: 15px 0;
+    padding: 12px;
+    border: 2px solid #333;
+    border-radius: 10px;
+    background-color: #2b2b2b;
+    color: #b3b3b3;
+    cursor: pointer;
+    outline: none;
+    transition: border-color 0.3s, background-color 0.3s;
+}
+
+input[type="file"]:hover {
+    border-color: #00c4ff;
+    background-color: #1e1e1e;
+}
+
+button {
+    background: linear-gradient(135deg, #00c4ff, #009ec3);
+    color: #121212;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 16px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    transition: background 0.3s, transform 0.2s;
+}
+
+button:hover {
+    background: linear-gradient(135deg, #009ec3, #006f8c);
+    transform: translateY(-3px);
+}
+
+#status {
+    margin-top: 20px;
+    font-size: 14px;
+    opacity: 0.8;
+    font-style: italic;
+}
+
+#show {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    align-items: center;
+    gap: 15px;
+    margin-top: 20px;
+    padding: 10px;
+    border-radius: 12px;
+    background-color: rgba(43, 43, 43, 0.7);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+}
+
+#show img {
+    width: 100%;
+    border-radius: 10px;
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.5);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+#show img:hover {
+    transform: scale(1.1);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.7);
+    filter: brightness(1.1);
+}
+
+/* Add Page Button */
+#addpage {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: linear-gradient(135deg, #00ff7f, #00c76f);
+    color: #121212;
+    padding: 14px 24px;
+    border-radius: 50%;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    font-size: 18px;
+    font-weight: bold;
+    transition: transform 0.3s, background-color 0.3s;
+}
+
+#addpage:hover {
+    background: linear-gradient(135deg, #00c76f, #008c5a);
+    transform: scale(1.1);
+}
+
+/* Reset Button */
+#reset {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    background: linear-gradient(135deg, #ff6347, #d94e3b);
+    color: #121212;
+    padding: 12px 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    transition: transform 0.3s, background-color 0.3s;
+}
+
+#reset:hover {
+    background: linear-gradient(135deg, #d94e3b, #b03b2d);
+    transform: translateY(-3px);
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 20px;
+    }
+
+    button {
+        font-size: 14px;
+        padding: 10px 15px;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+}
