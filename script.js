@@ -18,36 +18,56 @@ async function select() {
     show.innerHTML = ""
     for (let i = 0; i < files.length; i++) {
         const imgDataUrl = await readFileAsDataURL(files[i]);
+        const div1 = document.createElement("div")
+        div1.class = "grid"
+        show.appendChild(div1)
         const img = document.createElement("img")
         img.src = imgDataUrl
         img.style.width = '150px'
         img.id = `img${i}`
-        show.appendChild(img)
+        img.class="image"
+        div1.appendChild(img)
         await getImageDimensions(imgDataUrl);
-        // show.innerHTML+=<button id="cut">cut</button>
+        // div1.innerHTML += `<button id="cut${i}" class="cutbutton">✂</button>`
         // show.innerHTML+=<button id="rotate">rotate</button>
 
-        // const cutButton = document.createElement("button");
-        // cutButton.classList.add("cut-btn");
-        // cutButton.innerHTML = "✂";
-        // cutButton.onclick = () => removeImage(container, i);
+        const cutButton = document.createElement("button");
+        cutButton.classList.add("cutbutton");
+        cutButton.innerHTML = "✂";
+        cutButton.onclick = () => removeImage(i);
+        div1.appendChild(cutButton)
     };
     selectbutton.disabled = true
     imageInput.value = ""
 };
 
-// function removeImage(container, index) {
-//     container.remove();
-//     files.splice(index, 1);
-//     if (!files.length) convertButton.disabled = true;
-// }
+async function removeImage(index) {
+    convertbutton.disabled = false
+    files.splice(index, 1);
+    show.innerHTML = ""
+    for (let i = 0; i < files.length; i++) {
+        const imgDataUrl = await readFileAsDataURL(files[i]);
+        const div1 = document.createElement("div")
+        div1.class = "grid"
+        show.appendChild(div1)
+        const img = document.createElement("img")
+        img.src = imgDataUrl
+        img.style.width = '150px'
+        img.id = `img${i}`
+        img.class="image"
+        div1.appendChild(img)
+        await getImageDimensions(imgDataUrl);
+        // div1.innerHTML += `<button id="cut${i}" class="cutbutton">✂</button>`
+        // show.innerHTML+=<button id="rotate">rotate</button>
 
-
-
-
-
-
-
+        const cutButton = document.createElement("button");
+        cutButton.classList.add("cutbutton");
+        cutButton.innerHTML = "✂";
+        cutButton.onclick = () => removeImage(i);
+        div1.appendChild(cutButton)
+    };
+    // if (!files.length) convertbutton.disabled = true;
+};
 
 
 async function convertToPDF() {
@@ -61,7 +81,7 @@ async function convertToPDF() {
     }
 
     status.textContent = "Processing...";
-    status.style.color = "black";
+    status.style.color = "greenyellow";
 
     const { jsPDF } = window.jspdf;
 
@@ -137,41 +157,3 @@ async function reset() {
     files.length = 0;
 
 }
-
-// async function select() {
-//     files.push(...imageInput.files);
-//     if (!imageInput.files.length) {
-//         status.textContent = "Please select at least one image!";
-//         status.style.color = "red";
-//         return;
-//     }
-//     convertButton.disabled = false;
-//     show.innerHTML = "";
-//     for (let i = 0; i < files.length; i++) {
-//         const imgDataUrl = await readFileAsDataURL(files[i]);
-//         const container = document.createElement("div");
-//         container.classList.add("image-container");
-
-//         const img = document.createElement("img");
-//         img.src = imgDataUrl;
-//         img.style.width = '150px';
-//         img.id = `img${i}`;
-
-//         const rotateButton = document.createElement("button");
-//         rotateButton.classList.add("rotate-btn");
-//         rotateButton.innerHTML = "⟳";
-//         rotateButton.onclick = () => rotateImage(container);
-
-//         const cutButton = document.createElement("button");
-//         cutButton.classList.add("cut-btn");
-//         cutButton.innerHTML = "✂";
-//         cutButton.onclick = () => removeImage(container, i);
-
-//         container.appendChild(img);
-//         container.appendChild(rotateButton);
-//         container.appendChild(cutButton);
-//         show.appendChild(container);
-//     }
-//     selectButton.disabled = true;
-//     imageInput.value = "";
-// }

@@ -18,36 +18,56 @@ async function select() {
     show.innerHTML = ""
     for (let i = 0; i < files.length; i++) {
         const imgDataUrl = await readFileAsDataURL(files[i]);
+        const div1 = document.createElement("div")
+        div1.class = "grid"
+        show.appendChild(div1)
         const img = document.createElement("img")
         img.src = imgDataUrl
         img.style.width = '150px'
         img.id = `img${i}`
-        show.appendChild(img)
+        img.class="image"
+        div1.appendChild(img)
         await getImageDimensions(imgDataUrl);
-        // show.innerHTML+=<button id="cut">cut</button>
+        // div1.innerHTML += `<button id="cut${i}" class="cutbutton">✂</button>`
         // show.innerHTML+=<button id="rotate">rotate</button>
 
-        // const cutButton = document.createElement("button");
-        // cutButton.classList.add("cut-btn");
-        // cutButton.innerHTML = "✂";
-        // cutButton.onclick = () => removeImage(container, i);
+        const cutButton = document.createElement("button");
+        cutButton.classList.add("cutbutton");
+        cutButton.innerHTML = "✂";
+        cutButton.onclick = () => removeImage(i);
+        div1.appendChild(cutButton)
     };
     selectbutton.disabled = true
     imageInput.value = ""
 };
 
-// function removeImage(container, index) {
-//     container.remove();
-//     files.splice(index, 1);
-//     if (!files.length) convertButton.disabled = true;
-// }
+async function removeImage(index) {
+    convertbutton.disabled = false
+    files.splice(index, 1);
+    show.innerHTML = ""
+    for (let i = 0; i < files.length; i++) {
+        const imgDataUrl = await readFileAsDataURL(files[i]);
+        const div1 = document.createElement("div")
+        div1.class = "grid"
+        show.appendChild(div1)
+        const img = document.createElement("img")
+        img.src = imgDataUrl
+        img.style.width = '150px'
+        img.id = `img${i}`
+        img.class="image"
+        div1.appendChild(img)
+        await getImageDimensions(imgDataUrl);
+        // div1.innerHTML += `<button id="cut${i}" class="cutbutton">✂</button>`
+        // show.innerHTML+=<button id="rotate">rotate</button>
 
-
-
-
-
-
-
+        const cutButton = document.createElement("button");
+        cutButton.classList.add("cutbutton");
+        cutButton.innerHTML = "✂";
+        cutButton.onclick = () => removeImage(i);
+        div1.appendChild(cutButton)
+    };
+    // if (!files.length) convertbutton.disabled = true;
+};
 
 
 async function convertToPDF() {

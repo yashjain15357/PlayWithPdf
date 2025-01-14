@@ -20,7 +20,7 @@ h1 {
 }
 
 .container {
-    position: relative; /* Ensures child elements like Reset button can be positioned relative to this container */
+    position: relative; /* Ensures child elements like Reset .comman can be positioned relative to this container */
     max-width: 600px;
     background: rgba(30, 30, 30, 0.9);
     padding: 30px;
@@ -51,7 +51,7 @@ input[type="file"]:hover {
     background-color: #1e1e1e;
 }
 
-button {
+.comman {
     background: linear-gradient(135deg, #00c4ff, #009ec3);
     color: #121212;
     border: none;
@@ -63,7 +63,7 @@ button {
     transition: background 0.3s, transform 0.2s;
 }
 
-button:hover {
+.comman:hover {
     background: linear-gradient(135deg, #009ec3, #006f8c);
     transform: translateY(-3px);
 }
@@ -143,7 +143,7 @@ button:hover {
         padding: 20px;
     }
 
-    button {
+    .comman {
         font-size: 14px;
         padding: 10px 15px;
     }
@@ -151,4 +151,12 @@ button:hover {
     h1 {
         font-size: 2rem;
     }
+}
+.cutbutton{
+    background: linear-gradient(135deg, #ee0808, #67362f);
+    color: #121212;
+    padding: 2px 2px;
+    border-radius: 50%;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    transition: transform 0.3s, background-color 0.3s;
 }
