@@ -1,75 +1,123 @@
+// Define DOM elements
 const imageInput = document.getElementById('imageInput');
 const status = document.getElementById('status');
-const show = document.getElementById('show')
-const selectbutton = document.getElementById('select')
-const convertbutton = document.getElementById('convertbutton')
-convertbutton.disabled = true
-const files = []
+const show = document.getElementById('show');
+const selectbutton = document.getElementById('select');
+const convertbutton = document.getElementById('convertbutton');
+convertbutton.disabled = true;
+const files = [];
+const imageRotation = new Map();
 
+// Select images
 async function select() {
     files.push(...imageInput.files);
     if (!imageInput.files.length) {
         status.textContent = "Please select at least one image!";
         status.style.color = "red";
         return;
-    };
-    console.log("yasah")
-    convertbutton.disabled = false
-    show.innerHTML = ""
+    }
+    convertbutton.disabled = false;
+    show.innerHTML = "";
     for (let i = 0; i < files.length; i++) {
-        const imgDataUrl = await readFileAsDataURL(files[i]);
-        const div1 = document.createElement("div")
-        div1.class = "grid"
-        show.appendChild(div1)
-        const img = document.createElement("img")
-        img.src = imgDataUrl
-        img.style.width = '150px'
-        img.id = `img${i}`
-        img.class="image"
-        div1.appendChild(img)
-        await getImageDimensions(imgDataUrl);
-        // div1.innerHTML += `<button id="cut${i}" class="cutbutton">✂</button>`
-        // show.innerHTML+=<button id="rotate">rotate</button>
+        await renderImage(files[i], i);
+    }
+    selectbutton.disabled = true;
+    imageInput.value = "";
+}
 
-        const cutButton = document.createElement("button");
-        cutButton.classList.add("cutbutton");
-        cutButton.innerHTML = "✂";
-        cutButton.onclick = () => removeImage(i);
-        div1.appendChild(cutButton)
-    };
-    selectbutton.disabled = true
-    imageInput.value = ""
-};
+// Render image
+async function renderImage(file, index) {
+    const imgDataUrl = await readFileAsDataURL(file);
+    const div1 = document.createElement("div");
+    div1.classList.add("grid");
+    show.appendChild(div1);
 
+    const img = document.createElement("img");
+    img.src = imgDataUrl;
+    img.style.width = '150px';
+    img.id = `img${index}`;
+    img.className = "image";
+    div1.appendChild(img);
+
+    const cutButton = document.createElement("button");
+    cutButton.classList.add("cutbutton");
+    cutButton.innerHTML = "✂";
+    cutButton.onclick = () => removeImage(index);
+    div1.appendChild(cutButton);
+
+    const rotateButton = document.createElement("button");
+    rotateButton.classList.add("rotateButton");
+    rotateButton.innerHTML = "⟳";
+    rotateButton.onclick = () => rotateImage(index);
+    div1.appendChild(rotateButton);
+}
+
+// Remove image
 async function removeImage(index) {
-    convertbutton.disabled = false
     files.splice(index, 1);
-    show.innerHTML = ""
+    show.innerHTML = "";
     for (let i = 0; i < files.length; i++) {
-        const imgDataUrl = await readFileAsDataURL(files[i]);
-        const div1 = document.createElement("div")
-        div1.class = "grid"
-        show.appendChild(div1)
-        const img = document.createElement("img")
-        img.src = imgDataUrl
-        img.style.width = '150px'
-        img.id = `img${i}`
-        img.class="image"
-        div1.appendChild(img)
-        await getImageDimensions(imgDataUrl);
-        // div1.innerHTML += `<button id="cut${i}" class="cutbutton">✂</button>`
-        // show.innerHTML+=<button id="rotate">rotate</button>
+        await renderImage(files[i], i);
+    }
+    convertbutton.disabled = files.length === 0;
+}
 
-        const cutButton = document.createElement("button");
-        cutButton.classList.add("cutbutton");
-        cutButton.innerHTML = "✂";
-        cutButton.onclick = () => removeImage(i);
-        div1.appendChild(cutButton)
-    };
-    // if (!files.length) convertbutton.disabled = true;
-};
+// Rotate image
+async function rotateImage(index) {
+    const imgElement = document.getElementById(`img${index}`);
+    const currentRotation = (imageRotation.get(index) || 0) + 90;
+    imageRotation.set(index, currentRotation % 360);
+    imgElement.style.transform = `rotate(${currentRotation % 360}deg)`;
 
+    // Get the original file data as Data URL
+    const imgDataUrl = await readFileAsDataURL(files[index]);
+    
+    // Generate the rotated image Data URL
+    const rotatedDataUrl = await rotateImageData(imgDataUrl, currentRotation % 360);
+    
+    // Convert the rotated Data URL back to a File
+    const updatedFile = await dataURLToFile(rotatedDataUrl, files[index].name);
+    
+    // Update the file in the array
+    files[index] = updatedFile;
+}
 
+function dataURLToFile(dataUrl, filename) {
+    const arr = dataUrl.split(',');
+    const mime = arr[0].match(/:(.*?);/)[1];
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while (n--) {
+        u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new File([u8arr], filename, { type: mime });
+}
+
+// Rotate image data
+async function rotateImageData(dataUrl, angle) {
+    return new Promise((resolve) => {
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+        const img = new Image();
+
+        img.onload = () => {
+            const [width, height] = [img.width, img.height];
+            if (angle % 180 !== 0) {
+                [canvas.width, canvas.height] = [height, width];
+            } else {
+                [canvas.width, canvas.height] = [width, height];
+            }
+
+            ctx.translate(canvas.width / 2, canvas.height / 2);
+            ctx.rotate((angle * Math.PI) / 180);
+            ctx.drawImage(img, -width / 2, -height / 2);
+            resolve(canvas.toDataURL());
+        };
+
+        img.src = dataUrl;
+    });
+}
 async function convertToPDF() {
 
     console.log(imageInput.files);
@@ -81,7 +129,7 @@ async function convertToPDF() {
     }
 
     status.textContent = "Processing...";
-    status.style.color = "greenyellow";
+    status.style.color = "black";
 
     const { jsPDF } = window.jspdf;
 
@@ -142,9 +190,6 @@ function getImageDimensions(dataUrl) {
 
 
     });
-}
-async function click() {
-
 }
 
 async function addpage() {
