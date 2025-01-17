@@ -86,17 +86,9 @@ async function rotateImage(index) {
     const currentRotation = (imageRotation.get(index) || 0) + 90;
     imageRotation.set(index, currentRotation % 360);
     imgElement.style.transform = `rotate(${currentRotation % 360}deg)`;
-
-    // Get the original file data as Data URL
     const imgDataUrl = await readFileAsDataURL(files[index]);
-    
-    // Generate the rotated image Data URL
     const rotatedDataUrl = await rotateImageData(imgDataUrl, currentRotation % 360);
-    
-    // Convert the rotated Data URL back to a File
     const updatedFile = await dataURLToFile(rotatedDataUrl, files[index].name);
-    
-    // Update the file in the array
     files[index] = updatedFile;
 }
 
@@ -162,29 +154,19 @@ async function convertToPDF() {
         const imgDimensions = await getImageDimensions(imgDataUrl);
 
         console.log(imgDimensions.width, imgDimensions.height);
-
-        // Calculate aspect ratio and dimensions
         const pdfWidth = pdf.internal.pageSize.getWidth(); // Fixed PDF width
         const pdfHeight = ((imgDimensions.height * pdfWidth) / imgDimensions.width).toFixed(2); // Adjust height to aspect ratio
-
-        // Set the page size to match the image
         pdf.setPage(i + 1); // Ensure you're on the correct page
-        pdf.internal.pageSize.setHeight(parseFloat(pdfHeight)); // Adjust the page height dynamically
-
-        // Add the image to the page
+        pdf.internal.pageSize.setHeight(parseFloat(pdfHeight));
         pdf.addImage(imgDataUrl, 'WEBP', 0, 0, pdfWidth, parseFloat(pdfHeight), undefined, "SLOW");
-
-        // Add a new page if it's not the last image
         if (i < files.length - 1) {
-            pdf.addPage(); // Add a new page
+            pdf.addPage();
         }
     }
 
     pdf.save('multiple-images.pdf');
     status.textContent = "PDF has been created successfully!";
     status.style.color = "green";
-
-    // Disable the convert button after successful generation
     convertbutton.disabled = true;
 
 }
