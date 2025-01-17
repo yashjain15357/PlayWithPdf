@@ -34,10 +34,24 @@ async function renderImage(file, index) {
 
     const img = document.createElement("img");
     img.src = imgDataUrl;
-    img.style.width = '150px';
+       // Create a separate Image instance to load the image and get its dimensions
+    const imgprocess = new Image();
+    imgprocess.src = imgDataUrl;
+    
+    imgprocess.onload = () => {
+        const [width, height] = [imgprocess.width, imgprocess.height];
+        console.log("Image dimensions:", width, height);
+    
+        if (width <= height) {
+            img.style.width = '150px';
+        } else {
+            img.style.width = '250px';
+        }
+    };
     img.id = `img${index}`;
     img.className = "image";
     div1.appendChild(img);
+    
 
     const cutButton = document.createElement("button");
     cutButton.classList.add("cutbutton");
