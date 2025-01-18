@@ -21,7 +21,7 @@ h1 {
 
 .container {
     position: relative; 
-    max-width: 650px;
+    max-width: 750px;
     background: rgba(30, 30, 30, 0.9);
     padding: 30px;
     border-radius: 15px;
@@ -77,8 +77,8 @@ input[type="file"]:hover {
 
 #show {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(285px, 1fr));
-    grid-auto-rows: 285px;
+    grid-template-columns: repeat(auto-fit, minmax(355px, 1fr));
+    grid-auto-rows: 355px;
     align-items: center;
     gap: 15px;
     margin-top: 20px;

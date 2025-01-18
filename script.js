@@ -2,14 +2,13 @@
 const imageInput = document.getElementById('imageInput');
 const status = document.getElementById('status');
 const show = document.getElementById('show');
-const selectbutton = document.getElementById('select');
 const convertbutton = document.getElementById('convertbutton');
 convertbutton.disabled = true;
 const files = [];
 const imageRotation = new Map();
 
 // Select images
-async function select() {
+imageInput.addEventListener("change" ,async function select() {
     files.push(...imageInput.files);
     if (!imageInput.files.length) {
         status.textContent = "Please select at least one image!";
@@ -21,9 +20,8 @@ async function select() {
     for (let i = 0; i < files.length; i++) {
         await renderImage(files[i], i);
     }
-    selectbutton.disabled = true;
     imageInput.value = "";
-}
+})
 
 // Render image
 async function renderImage(file, index) {
@@ -34,8 +32,7 @@ async function renderImage(file, index) {
 
     const img = document.createElement("img");
     img.src = imgDataUrl;
-    
-    // Create a separate Image instance to load the image and get its dimensions
+       // Create a separate Image instance to load the image and get its dimensions
     const imgprocess = new Image();
     imgprocess.src = imgDataUrl;
     
@@ -43,17 +40,14 @@ async function renderImage(file, index) {
         const [width, height] = [imgprocess.width, imgprocess.height];
         console.log("Image dimensions:", width, height);
     
-        if (width <= height) {
+        if (width < height) {
             img.style.width = '150px';
         } else {
-            img.style.width = '250px';
+            img.style.width = '310px';
         }
     };
-    
     img.id = `img${index}`;
     img.className = "image";
-    
-    // Append the image to the DOM
     div1.appendChild(img);
     
 
@@ -86,9 +80,17 @@ async function rotateImage(index) {
     const currentRotation = (imageRotation.get(index) || 0) + 90;
     imageRotation.set(index, currentRotation % 360);
     imgElement.style.transform = `rotate(${currentRotation % 360}deg)`;
+
+    // Get the original file data as Data URL
     const imgDataUrl = await readFileAsDataURL(files[index]);
+    
+    // Generate the rotated image Data URL
     const rotatedDataUrl = await rotateImageData(imgDataUrl, currentRotation % 360);
+    
+    // Convert the rotated Data URL back to a File
     const updatedFile = await dataURLToFile(rotatedDataUrl, files[index].name);
+    
+    // Update the file in the array
     files[index] = updatedFile;
 }
 
@@ -154,19 +156,29 @@ async function convertToPDF() {
         const imgDimensions = await getImageDimensions(imgDataUrl);
 
         console.log(imgDimensions.width, imgDimensions.height);
+
+        // Calculate aspect ratio and dimensions
         const pdfWidth = pdf.internal.pageSize.getWidth(); // Fixed PDF width
         const pdfHeight = ((imgDimensions.height * pdfWidth) / imgDimensions.width).toFixed(2); // Adjust height to aspect ratio
+
+        // Set the page size to match the image
         pdf.setPage(i + 1); // Ensure you're on the correct page
-        pdf.internal.pageSize.setHeight(parseFloat(pdfHeight));
+        pdf.internal.pageSize.setHeight(parseFloat(pdfHeight)); // Adjust the page height dynamically
+
+        // Add the image to the page
         pdf.addImage(imgDataUrl, 'WEBP', 0, 0, pdfWidth, parseFloat(pdfHeight), undefined, "SLOW");
+
+        // Add a new page if it's not the last image
         if (i < files.length - 1) {
-            pdf.addPage();
+            pdf.addPage(); // Add a new page
         }
     }
 
     pdf.save('multiple-images.pdf');
     status.textContent = "PDF has been created successfully!";
     status.style.color = "green";
+
+    // Disable the convert button after successful generation
     convertbutton.disabled = true;
 
 }
@@ -192,12 +204,8 @@ function getImageDimensions(dataUrl) {
     });
 }
 
-async function addpage() {
-    selectbutton.disabled = false
-}
 async function reset() {
     convertbutton.disabled = true
-    selectbutton.disabled = false
     show.innerHTML = ""
     files.length = 0;
 

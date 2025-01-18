@@ -2,14 +2,13 @@
 const imageInput = document.getElementById('imageInput');
 const status = document.getElementById('status');
 const show = document.getElementById('show');
-const selectbutton = document.getElementById('select');
 const convertbutton = document.getElementById('convertbutton');
 convertbutton.disabled = true;
 const files = [];
 const imageRotation = new Map();
 
 // Select images
-async function select() {
+imageInput.addEventListener("change" ,async function select() {
     files.push(...imageInput.files);
     if (!imageInput.files.length) {
         status.textContent = "Please select at least one image!";
@@ -21,9 +20,8 @@ async function select() {
     for (let i = 0; i < files.length; i++) {
         await renderImage(files[i], i);
     }
-    selectbutton.disabled = true;
     imageInput.value = "";
-}
+})
 
 // Render image
 async function renderImage(file, index) {
@@ -42,10 +40,10 @@ async function renderImage(file, index) {
         const [width, height] = [imgprocess.width, imgprocess.height];
         console.log("Image dimensions:", width, height);
     
-        if (width <= height) {
+        if (width < height) {
             img.style.width = '150px';
         } else {
-            img.style.width = '250px';
+            img.style.width = '310px';
         }
     };
     img.id = `img${index}`;
@@ -206,12 +204,8 @@ function getImageDimensions(dataUrl) {
     });
 }
 
-async function addpage() {
-    selectbutton.disabled = false
-}
 async function reset() {
     convertbutton.disabled = true
-    selectbutton.disabled = false
     show.innerHTML = ""
     files.length = 0;
 
